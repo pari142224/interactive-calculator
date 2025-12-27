@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Calculator</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      text-align: center;
+      padding: 40px;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+    .result {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Interactive Calculator</h2>
+
+  <input type="number" id="num1" placeholder="Enter first number">
+  <input type="number" id="num2" placeholder="Enter second number">
+
+  <br>
+
+  <select id="operation">
+    <option value="+">Addition</option>
+    <option value="-">Subtraction</option>
+    <option value="*">Multiplication</option>
+    <option value="/">Division</option>
+  </select>
+
+  <br>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      let a = Number(document.getElementById("num1").value);
+      let b = Number(document.getElementById("num2").value);
+      let op = document.getElementById("operation").value;
+      let result;
+
+      if (op === "+") result = a + b;
+      else if (op === "-") result = a - b;
+      else if (op === "*") result = a * b;
+      else if (op === "/") result = b !== 0 ? a / b : "Cannot divide by zero";
+
+      document.getElementById("output").innerText = "Result: " + result;
+    }
+  </script>
+
+</body>
+</html>
 
