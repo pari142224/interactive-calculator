@@ -1,65 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Interactive Calculator</title>
+  <meta charset="UTF-8">
+  <title>Land Measurement Converter</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #f4f6f8;
+      padding: 30px;
+    }
+    h2 {
       text-align: center;
-      padding: 40px;
     }
     input, select, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
+      padding: 8px;
+      margin: 8px;
+      width: 250px;
     }
-    .result {
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 20px;
-      color: #2c3e50;
+    button {
+      cursor: pointer;
+      background: #2c3e50;
+      color: white;
+      border: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #34495e;
+      color: white;
     }
   </style>
 </head>
+
 <body>
 
-  <h2>Interactive Calculator</h2>
+<h2>Land Measurement Converter</h2>
 
-  <input type="number" id="num1" placeholder="Enter first number">
-  <input type="number" id="num2" placeholder="Enter second number">
+<center>
+  <input type="number" id="value" placeholder="Enter land value">
 
   <br>
 
-  <select id="operation">
-    <option value="+">Addition</option>
-    <option value="-">Subtraction</option>
-    <option value="*">Multiplication</option>
-    <option value="/">Division</option>
+  <select id="region">
+    <option value="standard">Standard</option>
+    <option value="north">North</option>
+    <option value="central">Central</option>
+    <option value="west">West</option>
+    <option value="south">South</option>
   </select>
 
   <br>
 
-  <button onclick="calculate()">Calculate</button>
+  <input type="text" id="unit" placeholder="Enter unit (e.g. sqft, acre)">
 
-  <div class="result" id="output"></div>
+  <br>
 
-  <script>
-    function calculate() {
-      let a = Number(document.getElementById("num1").value);
-      let b = Number(document.getElementById("num2").value);
-      let op = document.getElementById("operation").value;
-      let result;
+  <button onclick="convertLand()">Convert</button>
+</center>
 
-      if (op === "+") result = a + b;
-      else if (op === "-") result = a - b;
-      else if (op === "*") result = a * b;
-      else if (op === "/") result = b !== 0 ? a / b : "Cannot divide by zero";
+<div id="output"></div>
 
-      document.getElementById("output").innerText = "Result: " + result;
+<script>
+const conversionFactors = {
+  standard: {
+    sqft: 1,
+    sqm: 10.7639,
+    acre: 43560,
+    gunta: 1089,
+    sqyd: 9,
+    hectare: 107639,
+    sqkm: 10763910.4,
+    sqmile: 27878400,
+    cent: 435.6,
+    ground: 2400,
+    kanal: 5445
+  },
+  north: {
+    bigha_pucca: 27225,
+    bigha_kachha: 9075,
+    biswa_pucca: 1361.25,
+    biswa_kachha: 453.78,
+    killa: 43560,
+    sarsahi: 30.25
+  },
+  central: {
+    bigha_mp: 12000,
+    kattha_mp: 600
+  },
+  west: {
+    bigha_rajasthan: 27225,
+    bigha_gujarat: 17424,
+    biswa_pucca: 1361.25,
+    biswa_rajasthan: 871.2
+  },
+  south: {
+    cent: 435.6,
+    ground: 2400,
+    ankanam: 72,
+    guntha: 1089,
+    kuncham: 4356
+  }
+};
+
+function convertLand() {
+  const value = parseFloat(document.getElementById("value").value);
+  const region = document.getElementById("region").value;
+  const unit = document.getElementById("unit").value.toLowerCase();
+  const outputDiv = document.getElementById("output");
+
+  if (!conversionFactors[region]) {
+    alert("Invalid region");
+    return;
+  }
+
+  if (!conversionFactors[region][unit]) {
+    alert("Invalid unit for selected region");
+    return;
+  }
+
+  // Convert input to square feet
+  const inputSqft = value * conversionFactors[region][unit];
+
+  let html = `
+    <table>
+      <tr>
+        <th>Output Region</th>
+        <th>Unit</th>
+        <th>Converted Value</th>
+      </tr>
+  `;
+
+  for (const reg in conversionFactors) {
+    for (const u in conversionFactors[reg]) {
+      const converted = inputSqft / conversionFactors[reg][u];
+      html += `
+        <tr>
+          <td>${reg.toUpperCase()}</td>
+          <td>${u}</td>
+          <td>${converted.toFixed(6)}</td>
+        </tr>
+      `;
     }
-  </script>
+  }
+
+  html += "</table>";
+  outputDiv.innerHTML = html;
+}
+</script>
 
 </body>
 </html>
-
